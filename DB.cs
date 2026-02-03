@@ -19,8 +19,7 @@ namespace BinaryRage
             Interlocked.Increment(ref Cache.counter);
             SimpleObject simpleObject = new SimpleObject { Key = key, Value = value, FileLocation = filelocation };
 
-            sendQueue.Add(simpleObject);
-            var data = sendQueue.Take(); //this blocks if there are no items in the queue.
+            var data = simpleObject;
 
             //Add to cache
             lock (Cache.LockObject)
@@ -32,7 +31,7 @@ namespace BinaryRage
             {
                 lock (Cache.LockObject)
                 {
-                    Storage.WritetoStorage(data.Key, Compress.CompressGZip(ConvertHelper.ObjectToByteArray(value)),
+                    Storage.WritetoStorage(data.Key, Compress.CompressGZip(ConvertHelper.ObjectToByteArray(data.Value)),
                         data.FileLocation);
                 }
             });
